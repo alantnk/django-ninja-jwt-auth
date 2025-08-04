@@ -1,5 +1,5 @@
 from ninja.security import HttpBearer
-from .services import JWTService, JWTServiceProtocol
+from .services import token_service
 
 
 class AuthBearer(HttpBearer):
@@ -7,11 +7,9 @@ class AuthBearer(HttpBearer):
         """
         Authenticate the user using the provided token.
         """
-        jwt_service: JWTServiceProtocol = JWTService
+
         try:
-            payload = jwt_service.decode_token(
-                token, jwt_service.get_secret()
-            )  # noqa: E501
+            payload = token_service.decode_token(token)
             return payload.get("username")
         except Exception:
             return None
