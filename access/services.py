@@ -10,11 +10,11 @@ class JWTService:
     _ALGORITHM = "HS256"
     _SECRET = JWT_SECRET
 
-    def _get_secret(self) -> str:
+    def _get_secret(self):
         secret = self._SECRET.strip()
         return secret.strip()
 
-    def retrieve_tokens(self, username: str) -> dict:
+    def retrieve_tokens(self, username: str):
         access_token = self._encode(
             {"username": username},
             self._get_secret(),
@@ -32,33 +32,36 @@ class JWTService:
             "refresh_token": refresh_token,
         }
 
-    def _encode(self, payload: dict, secret: str, exp: timedelta) -> str:
+    def _encode(self, payload: dict, secret: str, exp: timedelta):
         return jwt.encode(
             {**payload, "exp": datetime.now(tz=timezone.utc) + exp},
             secret,
             algorithm=self._ALGORITHM,
         )
 
-    def _decode(self, token: str, secret: str) -> dict:
+    def _decode(self, token: str, secret: str):
+
         return jwt.decode(
             token,
             secret,
             algorithms=[self._ALGORITHM],
         )
 
-    def decode_token(self, token: str) -> dict:
+    def decode_token(self, token: str):
         return self._decode(token, self._get_secret())
 
-    def verify_token(self, token: str, secret: str) -> bool:
+    def verify_token(self, token: str) -> bool:
         try:
-            self._decode(token, secret)
+            self._decode(token, self._get_secret())
             return True
-        except jwt.ExpiredSignatureError:
-            return False
-        except jwt.InvalidTokenError:
+        except (
+            jwt.ExpiredSignatureError,
+            jwt.InvalidTokenError,
+            jwt.DecodeError,
+        ):  # noqa: E501
             return False
 
-    def refresh_token(self, refresh_token: str) -> str:
+    def refresh_token(self, refresh_token: str):
         try:
             payload = self._decode(
                 refresh_token, self._REF_KEY_PREFIX + self._get_secret()
@@ -70,7 +73,7 @@ class JWTService:
             )
         except jwt.ExpiredSignatureError:
             raise ValueError("Refresh token has expired.")
-        except jwt.InvalidTokenError:
+        except (jwt.InvalidTokenError, jwt.DecodeError):
             raise ValueError("Invalid refresh token.")
 
 

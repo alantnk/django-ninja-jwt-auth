@@ -10,5 +10,4 @@ api.add_router("account/", "account.api.router")
 
 @api.get("/protected", auth=AuthBearer())
 def protected(request):
-    print(dir(request.auth))
     return {"message": f"Hello, {request.auth}!"}
