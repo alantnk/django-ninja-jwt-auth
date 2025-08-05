@@ -16,6 +16,7 @@ Including another URLconf
 """
 
 from django.contrib import admin
+from django.conf import settings
 from django.urls import path
 from django.views.generic.base import RedirectView
 from .api import api
@@ -25,6 +26,14 @@ urlpatterns = [
     path("api/", api.urls),
     path("", RedirectView.as_view(url="/api/docs")),
 ]
+
+if settings.DEBUG:
+    from django.conf.urls.static import static
+
+    urlpatterns += static(
+        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
+    )  # noqa: E501
+
 
 admin.AdminSite.site_header = "Admin Site"
 admin.AdminSite.site_title = "🔐"

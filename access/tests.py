@@ -72,4 +72,4 @@ class RefreshTokenTest(TestCase):
             json={"token": "xxxxx"},
         )
         self.assertEqual(response.status_code, 400)
-        self.assertIn("message", response.json())
+        self.assertIn("detail", response.json())

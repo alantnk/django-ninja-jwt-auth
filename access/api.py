@@ -16,10 +16,6 @@ class TokenOut(Schema):
     access_token: str
 
 
-class Error(Schema):
-    message: str
-
-
 @router.post("/token")
 def token(request, data: UserIn):
 
@@ -29,7 +25,7 @@ def token(request, data: UserIn):
     return token_service.retrieve_tokens(data.email)
 
 
-@router.post("/refresh-token", response={200: TokenOut, 400: Error})
+@router.post("/refresh-token", response={200: TokenOut, 400: dict})
 def refresh_token(request, data: TokenIn):
     token = data.token
 
@@ -37,4 +33,4 @@ def refresh_token(request, data: TokenIn):
         new_access_token = token_service.refresh_token(token)
         return {"access_token": new_access_token}
     except Exception as e:
-        return 400, {"message": str(e)}
+        raise HttpError(400, str(e))

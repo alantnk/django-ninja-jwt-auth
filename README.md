@@ -2,7 +2,7 @@
 
 ### Routes
 
-1. api/signup
+1. api/account/signup
 2. api/protected
 3. api/auth/token
 4. api/auth/refresh-token

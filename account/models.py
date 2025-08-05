@@ -5,7 +5,7 @@ def user_directory_path(instance, filename):
     return f"avatars/{instance.user.id}/{filename}"
 
 
-class Account(models.Model):
+class Profile(models.Model):
     user = models.OneToOneField(
         "auth.User",
         on_delete=models.CASCADE,
@@ -28,3 +28,7 @@ class Account(models.Model):
         null=True,
         verbose_name="Bio",
     )
+    email_confirmed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user.username}'s Account"

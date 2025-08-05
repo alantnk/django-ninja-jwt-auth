@@ -1,8 +1,9 @@
 from ninja import NinjaAPI
 
 from access.bearer import AuthBearer
+from ninja import Redoc
 
-api = NinjaAPI()
+api = NinjaAPI(docs=Redoc())
 
 api.add_router("auth/", "access.api.router")
 api.add_router("account/", "account.api.router")
