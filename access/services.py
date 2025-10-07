@@ -1,14 +1,12 @@
 import jwt
 from datetime import datetime, timedelta, timezone
-from decouple import config
-
-JWT_SECRET = config("JWT_SECRET")
+from django.conf import settings
 
 
 class JWTService:
     _REF_KEY_PREFIX = "refresh_"
     _ALGORITHM = "HS256"
-    _SECRET = JWT_SECRET
+    _SECRET = settings.JWT_SECRET
 
     def _get_secret(self):
         secret = self._SECRET.strip()
@@ -79,6 +77,6 @@ class JWTService:
 
 token_service = JWTService()
 
-"__all__" == [
+__all__ = [
     "token_service",
 ]
